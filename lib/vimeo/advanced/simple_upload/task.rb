@@ -80,23 +80,14 @@ module Vimeo
           @video_id = vimeo.complete(id, filename)
         end
 
-        # Compares Vimeo's chunk list with own chunk list. Returns +true+ if identical.
         def valid?
-          received, sent = received_chunk_sizes, sent_chunk_sizes
-          sent.all? { |id, size| received[id] == size }
-        end
-
-        # Returns a hash of the sent chunks and their respective sizes.
-        def sent_chunk_sizes
-          Hash[chunks.map { |chunk| [chunk.index.to_s, chunk.size] }]
-        end
-
-        # Returns a of Vimeo's received chunks and their respective sizes.
-        def received_chunk_sizes
-          verification    = vimeo.verify_chunks(id)
-          chunk_list      = verification["ticket"]["chunks"]["chunk"]
-          chunk_list      = [chunk_list] unless chunk_list.is_a?(Array)
-          Hash[chunk_list.map { |chunk| [chunk["id"], chunk["size"].to_i] }]
+          verification = vimeo.verify_chunks(id)
+          #
+          # Vimeo API stopped returning chunks so
+          # assume that if this request succeeds
+          # then it's verified
+          #
+          verification["stat"] == "ok"
         end
       end
     end
