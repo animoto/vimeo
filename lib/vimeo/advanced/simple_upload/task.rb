@@ -81,13 +81,11 @@ module Vimeo
         end
 
         def valid?
-          verification = vimeo.verify_chunks(id)
           #
           # Vimeo API stopped returning chunks so
-          # assume that if this request succeeds
-          # then it's verified
+          # let's just assume that it's valid
           #
-          verification["stat"] == "ok"
+          true
         end
       end
     end
